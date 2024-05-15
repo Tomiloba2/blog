@@ -24,6 +24,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   blog      blog[]
+  comment   comment[]
 }
 
 model blog {
@@ -38,8 +39,10 @@ model blog {
 }
 
 model comment {
-  id      String @id @default(cuid())
+  id      String  @id @default(cuid())
   content String
-  blog    blog   @relation(fields: [blogId], references: [id])
+  blog    blog    @relation(fields: [blogId], references: [id])
   blogId  String
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
 }

@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateBlogDto {
@@ -19,6 +20,8 @@ export class CreateBlogDto {
 
     @IsNotEmpty()
     @IsString()
-    userId:string
+    userId: string;
+    
+    User: Prisma.UserCreateNestedOneWithoutBlogInput
 
 }

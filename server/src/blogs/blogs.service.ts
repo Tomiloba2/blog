@@ -1,15 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogsService {
   constructor(private prisma: PrismaService) { }
 
-  async create(createBlogDto: Prisma.blogCreateInput) {
+  async create(createBlogDto: CreateBlogDto) {
     try {
       const data = await this.prisma.blog.create({
-        data: createBlogDto
+        data: {
+          title: createBlogDto.title,
+          userId: createBlogDto.userId,
+          content: createBlogDto.content,
+          imgId: createBlogDto.imgId,
+          imgUrl: createBlogDto.imgUrl
+        }
       })
       return data
     } catch (error) {
@@ -46,7 +54,9 @@ export class BlogsService {
             select: {
               name: true, email: true, img: true, id: true
             }
-          }, comment: true
+          }, 
+          comment: true,
+          replies:true
         }
       })
       if (!data) throw new NotFoundException('blog not found')
@@ -56,11 +66,19 @@ export class BlogsService {
     }
   }
 
-  async update(id: string, updateBlogDto: Prisma.blogUpdateInput) {
+  async update(id: string, updateBlogDto: UpdateBlogDto) {
     try {
       const existingBlog = await this.prisma.blog.findUnique({ where: { id } })
       if (!existingBlog) throw new NotFoundException('blog not found')
-      const data = await this.prisma.blog.update({ where: { id }, data: updateBlogDto })
+      const data = await this.prisma.blog.update({
+        where: { id }, data: {
+          title: updateBlogDto.title,
+          userId: updateBlogDto.userId,
+          content: updateBlogDto.content,
+          imgId: updateBlogDto.imgId,
+          imgUrl: updateBlogDto.imgUrl
+        }
+      })
       return data
     } catch (error) {
       return error

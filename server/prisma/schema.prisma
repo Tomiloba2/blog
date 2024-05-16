@@ -54,3 +54,10 @@ model replies {
   comment   comment @relation(fields: [commentId], references: [id])
   User      User    @relation(fields: [userId], references: [id])
 }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.VarChar(200)
+  expiresAt DateTime
+}
